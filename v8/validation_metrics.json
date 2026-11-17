@@ -1,0 +1,37 @@
+{
+  "1": {
+    "meta_rows": 1834017,
+    "folds": 18,
+    "n_features": 319
+  },
+  "2": {
+    "validation_accuracy_fold0": 0.9496333333333333,
+    "other_test_seen_rows": 1,
+    "deficit_rule_rows": 25
+  },
+  "3": {
+    "meta_rows": 1405354,
+    "folds": 18,
+    "n_features": 603
+  },
+  "4": {
+    "validation_accuracy_fold0": 0.9440333333333333,
+    "other_test_seen_rows": 10,
+    "deficit_rule_rows": 5
+  },
+  "5": {
+    "validation_accuracy_last_event": 0.9345862235844491,
+    "order_only": false
+  },
+  "6": {
+    "validation_mae_L1_seconds": 6997585.690715016
+  },
+  "local_validation_summary": {
+    "1": "fold-0 MSE with a smaller GBDT stacker: 0.52710 -> 0.52472 with EASE rating-neighbourhood features",
+    "2": "fold0/fold1 acc: 0.9471/0.9484 -> 0.9496/0.9504 with EASE (lambda 300)",
+    "3": "fold-0 MSE with a smaller GBDT stacker: 0.66399 -> 0.66113 with EASE rating-neighbourhood features",
+    "4": "fold0/fold1 acc: 0.9426/0.9416 -> 0.9445/0.9436 with EASE (lambda 500 + 2000)",
+    "5": "last-event acc: 0.9319 -> 0.9334 with the larger pair classifier",
+    "6": "Task-6-like problems from the Task 3/4 and 1/2 files (true final gaps): MAE 7.683M/6.375M -> 7.518M/6.237M"
+  }
+}

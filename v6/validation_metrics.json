@@ -1,0 +1,36 @@
+{
+  "1": {
+    "model": "18-fold out-of-fold v3 feature bank, Ridge + residual HGB stacker",
+    "local_validation_mse": {
+      "v4_stacker_150k_rows": 0.52766,
+      "v6_stacker_all_rows": 0.52265
+    },
+    "eval_rows": "v4 tune+audit 50k (positive ratings)"
+  },
+  "2": {
+    "validation_accuracy_fold0": 0.9470666666666666,
+    "v5_same_fold": 0.9411333333333334,
+    "deficit_rule_rows": 29
+  },
+  "3": {
+    "model": "18-fold out-of-fold v3 feature bank (with time), Ridge + residual HGB stacker",
+    "local_validation_mse": {
+      "v3_style_stacker_150k_rows": 0.66402,
+      "v6_stacker_all_rows": 0.65746
+    },
+    "eval_rows": "out-of-fold rows of fold 0 (78,108 positive ratings)"
+  },
+  "4": {
+    "validation_accuracy_fold0": 0.9413,
+    "v5_same_fold": 0.9361,
+    "deficit_rule_rows": 5
+  },
+  "5": {
+    "validation_accuracy_last_event": 0.9321895236558893,
+    "v5_same_protocol": 0.9270389233286475
+  },
+  "6": {
+    "validation_mae_L1_seconds": 7108156.197919188,
+    "scale": 1.1
+  }
+}

@@ -1,0 +1,6 @@
+{"1": "five Bayesian-FM chains (v11's four plus a rank 64 Gaussian chain with era slots): production stacker trained on folds 1-17, fold 0: v9 0.51567 -> v10 0.51013 -> v11 0.50931 -> v12 0.50892",
+ "2": "unchanged from v9 (same code path; v9-v11 online 0.9519)",
+ "3": "unchanged from v11 (three GPU Bayesian-FM chains with time slots; production stacker fold 0 0.64291; v11 online 0.6542)",
+ "4": "unchanged from v10 (time-aware BERT4Rec; v11 online 0.9492)",
+ "5": "three averaged seeds of the time-aware SASRec plus a 128-unit SASRec: last-event accuracy 0.9354 -> 0.9363",
+ "6": "max_leaf_nodes 511, L2 1000, scale 1.08/1.05/1.0: Task-6-like problems (true final gaps) v10/v11 7.382M/6.084M -> v12 7.335M/6.023M"}

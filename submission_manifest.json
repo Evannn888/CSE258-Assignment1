@@ -1,0 +1,43 @@
+{
+  "predictions": {
+    "1": {
+      "rows": 20000,
+      "sha256": "fed9f484541921209745ac53c068c6cdfb1a986114ec68ae69389a81af366c17",
+      "min": 1.0,
+      "max": 5.0,
+      "mean": 4.0706150786318265
+    },
+    "2": {
+      "rows": 20000,
+      "sha256": "046eb9a046be044921417cd75636f69b852ff40c7b361c4ce29a6b0d7d0b993f"
+    },
+    "3": {
+      "rows": 20000,
+      "sha256": "33ff462155e24a1c8a4fb71f6b6cfb179820c0b95751f03af9e971ca5fc57013",
+      "min": 1.0,
+      "max": 5.0,
+      "mean": 3.8908753300368697
+    },
+    "4": {
+      "rows": 20000,
+      "sha256": "0c9de75c585eb15c86e2e1989cccf98d39648edc84e380066a0a9d517e64fc70"
+    },
+    "5": {
+      "rows": 86786,
+      "sha256": "b17611041c24494fd0f00834ff477f17eb4d33637f102251da52e75fa73b5da2"
+    },
+    "6": {
+      "rows": 55403,
+      "sha256": "9f8a5c4045a1672c5fe56c5e1950b5fa68b9aa781690191a20574660e4b94543",
+      "min": 0.0,
+      "max": 356609777.9143181,
+      "mean": 11688918.729962306
+    }
+  },
+  "source_files": {
+    "assignment1.py": "8c7d3a614ca099bb8396f216a19e61abf6b10bec07e01c2b20afc239bdb3a28f",
+    "writeup.txt": "9ef8c20f01aa245b015f8939ee3d217b8eb619a469bd711c244eed62dba5aa2e",
+    "requirements.txt": "ab29de73fe575cf71e0d10adaef029a3cfc95c387b98eafeec78b9931fd5dfd3",
+    "validation_metrics.json": "ce6578d948483cc034574f8a854078292466fa50ca430d16fd6b05f695b313e1"
+  }
+}

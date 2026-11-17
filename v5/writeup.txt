@@ -1,0 +1,63 @@
+CSE258 Assignment 1 - write-up (v5)
+
+General
+All models use only the designated training CSV of each task. Test files are read for their queries
+(user/item ids, timestamps, candidate pairs), never for labels. assignment1.py regenerates every
+prediction file; validation numbers below come from held-out training data, not the leaderboard.
+
+Two facts about the data drive several choices:
+(1) In Tasks 2, 4 and 5 the negative candidate is drawn in proportion to item popularity: the
+    popularity distribution of the test candidates is identical to that of training interactions.
+    Raw popularity is therefore useless; every feature is a lift (evidence divided by popularity),
+    and validation negatives are sampled the same way.
+(2) The Task 1-4 datasets are 10-cores: every item has at least 10 interactions across the training
+    file and both test files (checked; no exceptions).
+
+Tasks 1 and 3: rating prediction (unchanged from the previous submission)
+The leaderboard ignores ground-truth zero ratings, so the target is the rating given that it is
+positive; zero ratings remain implicit interactions. Base learners are shrunk user/item biases,
+explicit MF, user-block SVD++, spectral residual profiles, reliable top-K item neighbourhoods,
+cumulative-logit rating styles and inferred reading stages (Task 1); Task 3 adds temporal
+session/drift random effects. A Ridge model plus a residual gradient-boosted tree (HGB) stacks them
+on out-of-sample features. Task 1 averages three cross-fitted base models with a frozen spectral
+basis. A simpler leave-one-out GBDT and tuned MF/SVD++ were tried this round but were clearly worse
+(MF alone barely beats the bias model on this data; neighbourhood features carry most of the signal).
+
+Tasks 2 and 4: which of two items did the user interact with
+Per candidate: item-item co-occurrence evidence aggregated over the user's history (each neighbour
+who shares a history item and has the candidate votes 1/(history length+2), normalised by the
+popularity of both items, with rating weights); spectral features from a truncated SVD of the
+degree-normalised user-item matrix (user-item lift, similarity to a community centroid, pooled
+similarity to the history). Task 2 adds the candidate's activity during the user's active period;
+Task 4 weights history items by closeness to the query time, adds the candidate's popularity in
+windows around the query time and a user-based neighbourhood weighted by time. Pairs are classified
+by an antisymmetric HGB on feature differences plus symmetric context (both orientations are used in
+training). Training pairs come from four held-out folds of 30k interactions with two popularity
+negatives each. Two exact rules are applied: a candidate already in the user's training history is
+the negative (positives are new pairs), and an item whose training + other-test count is below 10
+must be a positive in at least that many rows (10-core deficit rule).
+Validation accuracy: Task 2 0.941, Task 4 0.936.
+
+Task 5: next item in the sequence
+Features: the co-occurrence evidence above with order-aware weights (whether neighbours took the
+candidate shortly after the shared item), position statistics of items in histories, the spectral
+features (with recency-weighted SVD), and the candidate's popularity in windows after the time of the
+user's last training event relative to all activity in those windows (newly popular items are much
+more likely to be read next; this was the largest gain, +0.8 points). Training sets mimic the test:
+every user's last event is held out, both on the full data and on data truncated at four earlier
+cutoffs (2016-07 to 2017-08), with three popularity negatives each. A candidate never seen in
+training is always the positive (negatives are training items); a candidate already in the history is
+the negative. Validation accuracy 0.927 (train on cutoff sets, test on last events), versus 0.917 for
+the previous feature set on the same protocol. Only timestamps of training interactions are used (the
+test rows have none); --task5-order-only runs the same model without any timestamp (validation 0.915).
+
+Task 6: time until the final interaction
+The test interaction is each user's final event. Pseudo-labels: drop each user's last k-1 training
+events (k = 1, 2, 3); the new last event is the target and its gap from the previous event the label.
+Features: the user's gap distribution (median, quantiles, recent gaps, burstiness), the time left until
+the end of the data, the target item's popularity in windows after the user's last event, quantiles
+of the item's interaction times after that event, and how long a break other readers of the item
+usually took before reading it. An HGB with absolute-error loss on log(1+gap) predicts the median;
+predictions are scaled by 1.05 (the next gap is slightly longer than earlier ones) and capped by the
+time left. Validation MAE on last-training-event targets: 7.09M seconds. The previous model trained
+only on users still active after artificial cutoffs and predicted gaps about twice as long.

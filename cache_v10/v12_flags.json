@@ -1,0 +1,1 @@
+{"t5": true, "t6": "T6_SCALE = [(90, 1.08), (365, 1.05), (np.inf, 1.0)]     # (time left < days, factor)\nT6_CUTOFF_DAYS = (14, 30, 60, 90, 120, 180, 270, 365, 540, 730, 1095)\nT6_PARAMS = dict(loss='absolute_error', max_iter=1200, learning_rate=0.03, max_leaf_nodes=511, min_samples_leaf=400,\n                 l2_regularization=1000.0, random_state=SEED)"}

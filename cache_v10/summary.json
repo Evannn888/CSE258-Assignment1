@@ -1,0 +1,6 @@
+{"1": "Bayesian FM chains (rank-32 Gaussian, rank-16 ordinal probit; heteroscedastic noise) added to the bank: production stacker trained on folds 1-17, fold 0: 0.51567 -> 0.51013",
+ "2": "unchanged from v9 (same code path; v9 online 0.9519)",
+ "3": "three Bayesian FM chains with month / session / user-year slots added to the bank: production stacker, fold 0: 0.65175 -> 0.64344",
+ "4": "time-aware BERT4Rec (gap and month embeddings): fold-0 accuracy 0.9450 -> 0.9460 (4-fold small-GBDT check 0.9437 -> 0.9451)",
+ "5": "time-aware SASRec: last-event accuracy 0.9349 -> 0.9354 (cached-set check 0.9319 -> 0.9323)",
+ "6": "weighted second fit, 11 cutoff sets, milder scale: Task-6-like problems (true final gaps) v9 7.500M/6.222M -> v10 7.382M/6.084M; last-event MAE 6.98M -> 7.05M (biased target)"}

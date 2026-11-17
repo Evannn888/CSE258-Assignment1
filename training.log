@@ -1,0 +1,67 @@
+06:30:35 task_6_train.csv: 1,301,245 rows, 55,403 users, 195,908 items
+06:30:46 task 6 pseudo set L1: 55,403 users
+06:30:52 task 6 pseudo set L2: 47,777 users
+06:30:57 task 6 pseudo set L3: 42,042 users
+06:30:58 task 6 cutoff set 14d: 702 users
+06:30:59 task 6 cutoff set 30d: 2,807 users
+06:31:01 task 6 cutoff set 60d: 6,630 users
+06:31:03 task 6 cutoff set 90d: 9,647 users
+06:31:05 task 6 cutoff set 120d: 12,087 users
+06:31:07 task 6 cutoff set 180d: 15,287 users
+06:31:09 task 6 cutoff set 270d: 18,412 users
+06:31:12 task 6 cutoff set 365d: 20,585 users
+06:31:15 task 6 cutoff set 540d: 22,640 users
+06:31:18 task 6 cutoff set 730d: 22,824 users
+06:31:19 task 6 cutoff set 1095d: 20,824 users
+06:36:34 task 6 validation MAE on last-train-event targets: 7,099,821 s
+06:54:11 wrote task_6_predictions.csv (55,403 rows)
+06:54:11 done: {6: {'validation_mae_L1_seconds': 7099821.171414385}}
+16:14:29 task_5_train.csv: 2,554,047 rows, 86,786 users, 235,689 items
+16:15:20 task 5 pseudo set (cutoff None): (86786, 4, 52)
+16:16:05 task 5 pseudo set (cutoff 1501545600): (85736, 4, 52)
+16:17:07 task 5 pseudo set (cutoff 1493596800): (83721, 4, 52)
+16:17:57 task 5 pseudo set (cutoff 1483228800): (80250, 4, 52)
+16:18:33 task 5 pseudo set (cutoff 1467331200): (75101, 4, 52)
+/data/UCSD/CSE258/A1/venv/lib/python3.14/site-packages/torch/nn/modules/transformer.py:433: UserWarning: Support for mismatched src_key_padding_mask and mask is deprecated. Use same type for both instead.
+  src_key_padding_mask = F._canonical_mask(
+/data/UCSD/CSE258/A1/venv/lib/python3.14/site-packages/torch/autograd/graph.py:1072: UserWarning: Memory Efficient attention defaults to a non-deterministic algorithm. To explicitly enable determinism call torch.use_deterministic_algorithms(True, warn_only=False). (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/cuda/attention_backward.cu:910.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+17:23:03 task 5: latent models and SASRec trained
+17:30:21 task 5 validation accuracy (last-event pseudo test): 0.9363
+17:39:59 wrote task_5_predictions.csv (86,786 rows)
+17:39:59 done: {5: {'validation_accuracy_last_event': 0.9362685225727652, 'order_only': False}}
+21:22:24 tasks_3_4_train.csv: 1,429,242 rows, 38,240 users, 17,178 items
+21:23:12 task 4 fold 0: (30000, 3, 42)
+21:24:07 task 4 fold 1: (30000, 3, 42)
+21:25:01 task 4 fold 2: (30000, 3, 42)
+21:25:45 task 4 fold 3: (30000, 3, 42)
+/data/UCSD/CSE258/A1/venv/lib/python3.14/site-packages/torch/autograd/graph.py:1072: UserWarning: Memory Efficient attention defaults to a non-deterministic algorithm. To explicitly enable determinism call torch.use_deterministic_algorithms(True, warn_only=False). (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/transformers/cuda/attention_backward.cu:910.)
+  return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+22:04:02 task 4: latent models trained
+22:08:12 task 4: EASE features done
+22:10:27 task 4 validation accuracy (fold 0, trained on 3 folds): 0.9460
+22:14:38 task 4: 10-core deficit rule set 4 rows
+22:14:39 wrote task_4_predictions.csv (20,000 rows)
+22:14:39 done: {4: {'validation_accuracy_fold0': 0.9459666666666666, 'other_test_seen_rows': 10, 'deficit_rule_rows': 4}}
+17:48:18 tasks_1_2_train.csv: 1,861,643 rows, 30,909 users, 51,007 items
+17:48:35 task 2 fold 0: (30000, 3, 29)
+17:48:51 task 2 fold 1: (30000, 3, 29)
+17:49:07 task 2 fold 2: (30000, 3, 29)
+17:49:23 task 2 fold 3: (30000, 3, 29)
+17:52:50 task 2: latent models trained
+18:02:21 task 2: EASE features done
+18:02:44 task 2 validation accuracy (fold 0, trained on 3 folds): 0.9501
+18:03:21 task 2: 10-core deficit rule set 25 rows
+18:03:21 wrote task_2_predictions.csv (20,000 rows)
+18:03:21 done: {2: {'validation_accuracy_fold0': 0.9501, 'other_test_seen_rows': 1, 'deficit_rule_rows': 25}}
+exit 0
+17:40:23 tasks_1_2_train.csv: 1,861,643 rows, 30,909 users, 51,007 items
+17:45:01 task 1: EASE rating-neighbourhood features done
+17:57:44 task 1: out-of-fold feature bank done
+18:06:22 wrote task_1_predictions.csv (20,000 rows)
+18:06:22 done: {1: {'meta_rows': 1834017, 'folds': 18, 'n_features': 324}}
+11:47:55 tasks_3_4_train.csv: 1,429,242 rows, 38,240 users, 17,178 items
+11:51:07 task 3: EASE rating-neighbourhood features done
+12:05:17 task 3: out-of-fold feature bank done
+12:19:59 wrote task_3_predictions.csv (20,000 rows)
+12:19:59 done: {3: {'meta_rows': 1405354, 'folds': 18, 'n_features': 606}}

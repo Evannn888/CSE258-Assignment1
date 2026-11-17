@@ -1,0 +1,69 @@
+{
+  "1": {
+    "model": "v4_frozen_spectral_density_oof_ensemble",
+    "seed": 2029,
+    "choice": {
+      "name": "oof_raw_v3_blend",
+      "raw_weight": 0.5
+    },
+    "validation_protocol": "globally isolated tune/audit; OOF meta; mean of complete predictions",
+    "audit_positive_rows": 24615,
+    "audit_positive_mse": 0.514441132887866,
+    "tune_positive_mse": 0.54082579660551,
+    "meta_rows": 150000,
+    "n_features": 827,
+    "folds": 3,
+    "raw_basis_policy": "core-fit frozen coordinates, no full-fit SVD rotation",
+    "test_rows": 20000,
+    "elapsed_seconds": 395.7448573112488,
+    "final_test_base_fit_rows": 1811643,
+    "final_meta_policy": "retain OOF combiner; common tuning/audit labels return to base models"
+  },
+  "2": {
+    "validation_accuracy_fold0": 0.9411333333333334,
+    "deficit_rule_rows": 34
+  },
+  "3": {
+    "model": "v3_large_meta_ordinal_neighborhood_fast_svdpp",
+    "seed": 258,
+    "audit_positive_mse": 0.6526553107237485,
+    "audit_baseline20k_positive_mse": 0.6656579364851839,
+    "audit_positive_rows": 24590,
+    "meta_fit_rows": 150000,
+    "base_holdout_rows": 200000,
+    "audit_paired_mse_change": -0.01300262576143538,
+    "audit_paired_standard_error": 0.0011830980626147429,
+    "fixed_config": {
+      "kind": "ridge_hgb",
+      "reg": 500.0,
+      "eta": 0.5,
+      "hgb": {
+        "max_leaf_nodes": 63,
+        "max_iter": 400,
+        "learning_rate": 0.04,
+        "min_samples_leaf": 250,
+        "l2_regularization": 100.0,
+        "early_stopping": false,
+        "random_state": 258
+      },
+      "tune_mse": 0.6600240009778012
+    },
+    "n_features": 595,
+    "caveat": "Historical internal validation only; not a leaderboard estimate",
+    "test_rows": 20000,
+    "elapsed_seconds": 380.52,
+    "prediction_min": 1.0,
+    "prediction_max": 5.0
+  },
+  "4": {
+    "validation_accuracy_fold0": 0.9361,
+    "deficit_rule_rows": 6
+  },
+  "5": {
+    "validation_accuracy_last_event": 0.9270389233286475,
+    "order_only": false
+  },
+  "6": {
+    "validation_mae_L1_seconds": 7086362.401484401
+  }
+}

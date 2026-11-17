@@ -1,0 +1,181 @@
+CSE258 Assignment 1 - write-up
+Code: https://github.com/Evannn888/CSE258-Assignment1
+      assignment1.py in the repository regenerates all six prediction files; the repository also holds
+      the experiment scripts and the earlier versions of the code.
+
+====================================================================================================
+OVERVIEW
+====================================================================================================
+Run:  python assignment1.py --data-dir assignment1_2026 --output-dir . [--tasks 1 2 3 4 5 6]
+Needs an NVIDIA GPU (PyTorch). Each task has one entry function: run_rating_task (Tasks 1 and 3),
+run_pair_task (Tasks 2 and 4), run_task5 and run_task6.
+
+Data rules
+- Every model is trained only on the training CSV of its own task. Test files are read only for their
+  queries (user/item ids, timestamps, candidate pairs), never for labels.
+- One exception, used only to choose methods: the Task 1-4 training files still contain the users'
+  real final interactions, so they were turned into Task-5-like and Task-6-like check problems (final
+  interaction held out, answer known). Methods for Tasks 5 and 6 were compared on these problems; the
+  Task 5/6 models themselves are trained on their own files only. No user or item is linked across
+  files (each file is anonymised separately).
+- All numbers below are validation results on held-out training data, not leaderboard scores.
+
+Three facts about the data that shape the design
+1. Tasks 2, 4, 5: the negative candidate is the item of a randomly sampled interaction, so it follows
+   the popularity distribution. Raw popularity is therefore useless: features are measured relative
+   to popularity, and every model is trained against negatives drawn the same way.
+2. The Task 1-4 data are 10-cores: every item has at least 10 interactions across the training file
+   and both test files.
+3. Timestamps are dates (all between 05:00 and 10:00 UTC), so the order of events within a day
+   carries no information. Task 5 and Task 6 test rows are each user's latest interaction.
+
+====================================================================================================
+SHARED BUILDING BLOCKS
+====================================================================================================
+EASE (Steck 2019)
+  Closed-form item-item regression on the binary user-item matrix:
+  B = I - P diag(1/diag P), P = (X'X + lambda I)^-1, inverted in place with LAPACK.
+  - Tasks 2/4: a candidate's score is the sum of B over the user's history (Task 4 also with history
+    weighted by closeness to the query time), raw and divided by popularity^0.75.
+  - Tasks 1/3: B gives rating-neighbourhood features: how strongly the target book is tied to the
+    user's other books, and the B-weighted average of the user's ratings of those books. Task 3 also
+    uses the user-user version.
+
+Bayesian factorization machine (Tasks 1 and 3)
+  Ordinary matrix factorisation barely beats user/item biases on these sparse data (median 24 ratings
+  per user): fold-0 MSE 0.589 against 0.5885. A factorization machine sampled by Gibbs sampling (as in
+  libFM, Rendle 2012) averages over the posterior instead and samples its own regularisation, so
+  nothing has to be tuned. One chain alone reaches an MSE of about 0.530 on Task 1.
+  - Inputs ("SVD++ flipped", Rendle, Zhang & Koren 2019): user id, book id, the set of books the user
+    interacted with and the set of users of the book (existence only, never ratings). Task 3 adds the
+    calendar month, the user's day and the user's year.
+  - Two additions to plain libFM: user- and book-specific noise levels, and an ordinal-probit version
+    for the 1-5 scale.
+  - Written for the GPU: all 18 out-of-fold chains of a configuration run in one batch (11 minutes for
+    18 rank-32 chains, instead of about 8 CPU-hours for the earlier CPU version). GPU sampling is not
+    bit-reproducible, so a re-run agrees statistically, not digit by digit.
+
+Latent factor models (Tasks 2, 4, 5)
+  Trained with BPR against popularity negatives: matrix factorisation, an SVD++-style variant, and an
+  FPMC-style variant that adds the similarity to the items next to the query in the user's timeline.
+
+Sequence models (Tasks 4 and 5)
+  - Task 4, BERT4Rec: a [MASK] token is inserted at the query time and scored against the candidates;
+    "fill in the blank" is exactly the structure of Task 4. Every token also carries the gap to its
+    neighbouring events and its calendar month.
+  - Task 5, SASRec over the user's last 100 books, with the same time information.
+
+Pair classifier (Tasks 2, 4, 5)
+  The classifier sees the difference between the two candidates' features plus shared context and is
+  trained on both orders, so swapping the candidates flips its decision. A gradient-boosted tree is
+  blended with a GPU MLP trained on the same pairs.
+
+====================================================================================================
+TASKS 1 AND 3: RATING PREDICTION
+====================================================================================================
+Target: the rating given that it is positive (the grader skips zero ratings); zero ratings are kept
+as implicit interactions.
+
+Features, computed out-of-fold over 18 folds so that the stacker trains on about 1.8M (Task 1) and
+1.4M (Task 3) ratings:
+  - classic base models: shrunk user/item biases, explicit MF, SVD++, spectral residual profiles,
+    top-K neighbourhoods, rating-style models and reading stages (Task 1); temporal session and drift
+    effects (Task 3)
+  - EASE rating-neighbourhood features
+  - Bayesian FM chains
+      Task 1 (five): rank 64 Gaussian, rank 64 ordinal probit, two rank 32 Gaussian, and a rank 64
+                     Gaussian chain with "era" inputs (the year a book first appears, the median year
+                     of a book's and of a user's interactions)
+      Task 3 (three): rank 32 Gaussian with month and day, rank 32 and rank 64 ordinal probit with
+                     month, day and user-year
+
+Stacker: Ridge plus a gradient-boosted model on its residuals (127 leaves, 1500 rounds), averaged
+50/50 with an MLP (2048-512 units, 3 seeds). Test predictions are averaged over the 18 fold models.
+
+Validation (stacker trained on folds 1-17, scored on fold 0):
+                    without Bayesian FM     final
+  Task 1 MSE              0.5157            0.5089
+  Task 3 MSE              0.6518            0.6429
+
+====================================================================================================
+TASKS 2 AND 4: WHICH OF TWO BOOKS DID THE USER INTERACT WITH?
+====================================================================================================
+Features per candidate:
+  - co-occurrence evidence aggregated over the user's history (normalised by popularity, weighted by
+    ratings), spectral features (truncated SVD), EASE scores, latent model scores
+  - Task 2: how active the candidate was during the user's own active period
+  - Task 4: popularity around the query time, a time-weighted user neighbourhood, history weighted by
+    closeness to the query time, and BERT4Rec
+
+Classifier: GBDT (weight 0.7) + MLP (0.3), trained on four folds of 30k held-out interactions with two
+popularity negatives each.
+
+Exact rules:
+  - a candidate already in the user's history (in the training file, or among the user's pairs in the
+    other task's test file) is the negative
+  - an item with fewer than 10 known interactions must be the positive often enough to reach 10
+    (10-core rule)
+
+Validation accuracy (fold 0): Task 2 0.9501, Task 4 0.9460.
+
+====================================================================================================
+TASK 5: NEXT BOOK IN THE SEQUENCE
+====================================================================================================
+Features: order-aware co-occurrence (did other readers take the candidate soon after a shared book),
+position statistics, recency-weighted spectral features, the candidate's popularity after the user's
+last event, latent scores (MF, FPMC), and two SASRec features (three seeds averaged, plus a larger
+model).
+
+Training data mimic the test: every user's last event is held out, on the full data and on data cut
+at four earlier dates, with three popularity negatives each.
+
+Classifier: a larger GBDT (127 leaves, 1000 rounds) + MLP, 50/50.
+
+Exact rules: a candidate never seen in training is the positive; one already in the history is the
+negative.
+
+Validation (trained on the cut-off sets, scored on the users' last events): accuracy 0.9363. The
+real test is about 0.5 points harder than this pseudo-test (checked on Task-5-like problems).
+The option --task5-order-only runs the model without any timestamp.
+
+====================================================================================================
+TASK 6: TIME UNTIL THE FINAL INTERACTION
+====================================================================================================
+Training labels, all from the Task 6 file:
+  - last-event sets: the target is a user's last, second-last or third-last event (later events
+    removed), the label its gap from the event before
+  - cutoff sets: pretend the data end 14 days to 3 years earlier (11 dates); for users still active
+    after that date, the target is their last event before it. This is the same situation as in the
+    test: exactly one event remains between the previous event and the end.
+
+Features: the user's gap history, the time left until the end of the data, the target book's activity
+after the user's last event, how long other readers usually wait before reading it, the user's typical
+reading lag, and co-reader lags (readers of both the user's recent books and the target: how long they
+took between them, weighted by how similar they are to the user).
+
+Model: median regression (absolute-error GBDT on log(1 + gap), up to 511 leaves). It is fitted twice;
+the second fit weights every row by its predicted gap, because the metric is in seconds and long gaps
+dominate it. The final prediction averages this model with five copies trained on bootstrap samples,
+is scaled by 1.08 / 1.05 / 1.0 (time left under 90 days / under a year / more) and capped by the time
+left.
+
+Validation on Task-6-like problems from the Task 1-4 files (true final gaps known): MAE 7.31M and
+6.01M seconds, down from 7.68M and 6.38M for the first version of this pipeline. About 5 users per
+file have impossible final dates (years such as 2558 or 3102); they cause about 18% of the error and
+cannot be predicted.
+
+====================================================================================================
+WHAT DID NOT HELP
+====================================================================================================
+Rating tasks: tuned MF / Funk-SVD, an item autoencoder (I-AutoRec), Mult-VAE, an MLP with learned
+embeddings, a 5-class MLP stacker, feeding the user's other ratings into the factorization machine
+(it memorises the row's own rating), more time inputs for Task 3, extra chains beyond the ones above,
+and variants of the stacker.
+Pair tasks: larger classifiers, LightGCN, predicted-rating features, averaging BERT4Rec seeds,
+same-day "session" EASE.
+Task 5: SASRec with a sampled softmax, longer histories or more negatives for SASRec, features based on
+how often an item appears among the test candidates.
+Task 6: distributions assembled from classifiers, more cutoff dates, features from other test users.
+
+In the last rounds a change was kept only if it improved on at least two validation folds (or on both
+Task 6 check files), to avoid picking up noise.

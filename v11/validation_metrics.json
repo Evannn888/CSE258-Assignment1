@@ -1,0 +1,37 @@
+{
+  "1": {
+    "meta_rows": 1834017,
+    "folds": 18,
+    "n_features": 323
+  },
+  "2": {
+    "validation_accuracy_fold0": 0.9501,
+    "other_test_seen_rows": 1,
+    "deficit_rule_rows": 25
+  },
+  "3": {
+    "meta_rows": 1405354,
+    "folds": 18,
+    "n_features": 606
+  },
+  "4": {
+    "validation_accuracy_fold0": 0.9459666666666666,
+    "other_test_seen_rows": 10,
+    "deficit_rule_rows": 4
+  },
+  "5": {
+    "validation_accuracy_last_event": 0.9353812826953656,
+    "order_only": false
+  },
+  "6": {
+    "validation_mae_L1_seconds": 7053700.313062787
+  },
+  "local_validation_summary": {
+    "1": "Bayesian FM on the GPU, four chains (rank 64 Gaussian, rank 64 ordinal probit, two rank 32 Gaussian): production stacker trained on folds 1-17, fold 0: v9 0.51567 -> v10 0.51013 -> v11 0.50931",
+    "2": "unchanged from v9 (same code path; v9 online 0.9519)",
+    "3": "Bayesian FM on the GPU, three chains with time slots (rank 32 Gaussian; rank 32 and 64 ordinal probit): production stacker, fold 0: v9 0.65175 -> v10 0.64344 -> v11 0.64291",
+    "4": "unchanged from v10: time-aware BERT4Rec, fold-0 accuracy 0.9450 -> 0.9460",
+    "5": "unchanged from v10: time-aware SASRec, last-event accuracy 0.9349 -> 0.9354",
+    "6": "unchanged from v10: Task-6-like problems (true final gaps) v9 7.500M/6.222M -> v10 7.382M/6.084M"
+  }
+}

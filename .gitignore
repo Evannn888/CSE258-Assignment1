@@ -1,0 +1,49 @@
+# Only code, notes and the submitted prediction files are versioned. The course data, cached features,
+# Bayesian-FM chains, model outputs and the virtual environment stay local.
+/*
+!/.gitignore
+!/README.md
+!/HISTORY.md
+!/assignment1.py
+!/writeup.txt
+!/requirements.txt
+!/validate_submission.py
+!/task_*_predictions.csv
+!/submission_manifest.json
+!/validation_metrics.json
+!/training.log
+
+# earlier versions: code and notes only
+!/v[0-9]*/
+/v[0-9]*/*
+!/v[0-9]*/assignment1.py
+!/v[0-9]*/writeup.txt
+!/v[0-9]*/requirements.txt
+!/v[0-9]*/validation_metrics.json
+
+# experiment scripts (their cached inputs and outputs are not included)
+!/cache_v7/
+/cache_v7/*
+!/cache_v7/*.py
+!/cache_v8/
+/cache_v8/*
+!/cache_v8/*.py
+!/cache_v8/*.sh
+!/cache_v10/
+/cache_v10/*
+!/cache_v10/*.py
+!/cache_v10/*.sh
+!/cache_v10/*.json
+!/experiments/
+/experiments/**
+!/experiments/**/
+!/experiments/**/*.py
+__pycache__/
+
+# Chinese notes and the scripts that only wrote them are kept locally (zh_backup/), not versioned
+/cache_v10/make_docs_v1*.py
+/cache_v10/make_readme.py
+/cache_v10/summary_numbers_v1*.json
+/experiments/finalize_submission.py
+/experiments/finalize_v3.py
+/experiments/finalize_v4.py

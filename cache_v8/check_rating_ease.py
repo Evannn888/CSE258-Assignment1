@@ -1,0 +1,21 @@
+import sys, numpy as np, importlib.util
+from pathlib import Path
+spec = importlib.util.spec_from_file_location('a1v8', '/data/UCSD/CSE258/A1/v8/assignment1.py')
+M = importlib.util.module_from_spec(spec); spec.loader.exec_module(M)
+D = Path('/data/UCSD/CSE258/A1/assignment1_2026')
+a, users, items = M.load(D / M.FILES[3])
+nu, ni = len(users), len(items)
+tests = M.read_test(D / 'task_3_test.csv')
+qu = np.array([users.get(r['user'], nu) for r in tests], np.int64); qi = np.array([items.get(r['item'], ni) for r in tests], np.int64)
+folds = np.array_split(np.random.default_rng(11).permutation(len(a)), M.RATING_FOLDS)
+y_folds = [a[p, 3].astype(float) for p in folds]
+rows = np.concatenate([p[yf > 0] for p, yf in zip(folds, y_folds)])
+meta = np.load('/data/UCSD/CSE258/A1/cache_v7/t3_meta.npz')
+assert (rows == meta['rows']).all()
+E, Et = M.rating_ease_features(3, a, folds, rows, qu, qi, nu, ni)
+ref = np.load('/data/UCSD/CSE258/A1/cache_v8/rating_ease_t3_150.npz')
+U = np.load('/data/UCSD/CSE258/A1/cache_v8/rating_uease_t3_100.npy')
+print('shapes', E.shape, Et.shape)
+print('item part max abs diff', np.nanmax(np.abs(E[:, :5] - np.nan_to_num(ref['E']))), 'test', np.nanmax(np.abs(Et[:, :5] - np.nan_to_num(ref['Et']))))
+print('user part max abs diff', np.abs(E[:, 5:] - U).max())
+print('any NaN', np.isnan(E).any(), np.isnan(Et).any())

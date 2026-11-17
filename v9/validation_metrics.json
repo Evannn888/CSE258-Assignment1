@@ -1,0 +1,37 @@
+{
+  "1": {
+    "meta_rows": 1834017,
+    "folds": 18,
+    "n_features": 319
+  },
+  "2": {
+    "validation_accuracy_fold0": 0.9501,
+    "other_test_seen_rows": 1,
+    "deficit_rule_rows": 25
+  },
+  "3": {
+    "meta_rows": 1405354,
+    "folds": 18,
+    "n_features": 603
+  },
+  "4": {
+    "validation_accuracy_fold0": 0.945,
+    "other_test_seen_rows": 10,
+    "deficit_rule_rows": 5
+  },
+  "5": {
+    "validation_accuracy_last_event": 0.9349203788629502,
+    "order_only": false
+  },
+  "6": {
+    "validation_mae_L1_seconds": 6981095.365483964
+  },
+  "local_validation_summary": {
+    "1": "unchanged from v8 (EASE rating-neighbourhood features; v8 online 0.5151)",
+    "2": "fold0 0.9496 -> 0.9501 with the GBDT/MLP blend (two-fold mean 0.9500 -> 0.9506)",
+    "3": "unchanged from v8 (item + user EASE features; v8 online 0.6665)",
+    "4": "two-fold mean 0.9441 -> 0.9451 with the GBDT/MLP blend",
+    "5": "last-event acc 0.9344 -> 0.9352 with the 50/50 GBDT/MLP blend (large GBDT)",
+    "6": "Task-6-like problems (true final gaps): v8 7.518M/6.237M -> v9 7.500M/6.222M; last-event MAE 7.00M -> 6.98M"
+  }
+}
